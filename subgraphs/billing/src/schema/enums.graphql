@@ -1,0 +1,13 @@
+enum ProductTypeEnum {
+  IKON_CONNECT
+}
+
+enum TransferReasonEnum {
+  DEALER_TRANSFER
+  AUCTION
+  DEALER_TRADE
+  CUSTOMER_REGISTRATION
+  UNWIND
+  INITIAL_PAIRING
+  SMNS
+}

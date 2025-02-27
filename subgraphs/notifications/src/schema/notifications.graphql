@@ -1,0 +1,54 @@
+type Notification @key(fields: "id") {
+  id: ID!
+  deliveryMethod: DeliveryMethodEnum!
+  email: String
+  phone: String
+  deviceId: String
+  templateIds: [String!]
+  templates: [Notification!]!
+  type: NotificationTypeEnum!
+  payload: JSON
+  sentAt: DateTime
+  userId: String! @external
+  accountId: String! @external
+  alertId: String
+}
+
+type NotificationsTemplate @key(fields: "id") {
+  id: ID!
+  body: String!
+  type: NotificationTypeEnum!
+  deliveryMethod: DeliveryMethodEnum!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Inbox @key(fields: "id") {
+  id: ID!
+  userId: ID! @external
+  accountId: ID! @external
+  alertId: ID
+  description: String!
+  seen: Boolean!
+  type: InboxTypeEnum!
+  title: String
+  alertType: AlertTypeEnum
+  notificationType: NotificationTypeEnum
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserPushDevice @key(fields: "id") {
+  id: ID!
+  deviceId: String!
+  lastLoginAt: DateTime!
+  userId: ID! @external
+  deletedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  healthCheck: String!
+}

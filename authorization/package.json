@@ -1,0 +1,30 @@
+{
+  "name": "authorization-service",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "build:prod": "tsc -p tsconfig.prod.json",
+    "watch": "tsc --watch",
+    "start:watch": "node watch.js",
+    "dev": "concurrently -k \"yarn watch\" \"yarn start:watch\""
+  },
+  "type": "module",
+  "dependencies": {
+    "@apollo/server": "^4.11.2",
+    "@as-integrations/aws-lambda": "^3.1.0",
+    "@fastify/aws-lambda": "^5.0.0",
+    "fastify": "^5.2.0",
+    "graphql": "^16.10.0",
+    "tsc": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "chokidar": "^4.0.2",
+    "concurrently": "^9.1.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

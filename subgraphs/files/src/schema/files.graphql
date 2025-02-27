@@ -1,0 +1,13 @@
+type FileOutput @key(fields: "id") {
+  id: ID!
+  "File type like DEVICE_ACTIVITY_PER_DEVICE_REPORT | REGISTRATIONS_REPORT"
+  type: FileOutputEnum
+  "CSV/EXCEL/PDF"
+  extension: FileOutputTypeEnum
+  "URL from which the exported file can be downloaded"
+  downloadUrl: String!
+}
+
+type Query {
+  healthCheck: String!
+}

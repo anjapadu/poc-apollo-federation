@@ -1,0 +1,16 @@
+extend type Account @key(fields: "id") {
+  id: ID! @external
+  name: String
+}
+
+extend type Vehicle @key(fields: "id") {
+  id: ID! @external
+  make: String
+  model: String
+  year: Int
+}
+
+extend type Device @key(fields: "id") {
+  id: ID! @external
+  imei: String @external
+}

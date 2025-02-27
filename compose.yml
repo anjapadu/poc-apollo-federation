@@ -1,0 +1,189 @@
+version: "3.9"
+
+services:
+  ################################################
+  # Users Service
+  ################################################
+  users:
+    build:
+      context: ./subgraphs/users
+      dockerfile: Dockerfile
+    volumes:
+      - ./subgraphs/users/src:/app/src
+      - ./subgraphs/users/dist:/app/dist
+      - ./subgraphs/users/tsconfig.json:/app/tsconfig.json
+    ports:
+      - "4001:4001"
+    environment:
+      NODE_ENV: development
+      PORT: 4001
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "-X",
+          "POST",
+          "-H",
+          "Content-Type: application/json",
+          "-d",
+          "{\"query\":\"{ healthCheck }\"}",
+          "http://users:4001/graphql"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  ################################################
+  # Billing Service
+  ################################################
+  billing:
+    build:
+      context: ./subgraphs/billing
+      dockerfile: Dockerfile
+    volumes:
+      - ./subgraphs/billing/src:/app/src
+      - ./subgraphs/billing/dist:/app/dist
+      - ./subgraphs/billing/tsconfig.json:/app/tsconfig.json
+    ports:
+      - "4002:4002"
+    environment:
+      NODE_ENV: development
+      PORT: 4002
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "-X",
+          "POST",
+          "-H",
+          "Content-Type: application/json",
+          "-d",
+          "{\"query\":\"{ healthCheck }\"}",
+          "http://billing:4002/graphql"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  ################################################
+  # Notifications Service
+  ################################################
+  notifications:
+    build:
+      context: ./subgraphs/notifications
+      dockerfile: Dockerfile
+    volumes:
+      - ./subgraphs/notifications/src:/app/src
+      - ./subgraphs/notifications/dist:/app/dist
+      - ./subgraphs/notifications/tsconfig.json:/app/tsconfig.json
+    ports:
+      - "4003:4003"
+    environment:
+      NODE_ENV: development
+      PORT: 4003
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "-X",
+          "POST",
+          "-H",
+          "Content-Type: application/json",
+          "-d",
+          "{\"query\":\"{ healthCheck }\"}",
+          "http://notifications:4003/graphql"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  ################################################
+  # Notifications Service
+  ################################################
+  files:
+    build:
+      context: ./subgraphs/files
+      dockerfile: Dockerfile
+    volumes:
+      - ./subgraphs/files/src:/app/src
+      - ./subgraphs/files/dist:/app/dist
+      - ./subgraphs/files/tsconfig.json:/app/tsconfig.json
+    ports:
+      - "4004:4004"
+    environment:
+      NODE_ENV: development
+      PORT: 4004
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "-X",
+          "POST",
+          "-H",
+          "Content-Type: application/json",
+          "-d",
+          "{\"query\":\"{ healthCheck }\"}",
+          "http://files:4004/graphql"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  ################################################
+  # Authorization Service
+  ################################################
+  authorization:
+    build:
+      context: ./authorization
+      dockerfile: Dockerfile
+    volumes:
+      - ./authorization/src:/app/src
+      - ./authorization/tsconfig.json:/app/tsconfig.json
+      - ./authorization/package.json:/app/package.json
+    ports:
+      - "4100:4100"
+    environment:
+      NODE_ENV: development
+      PORT: 4100
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://authorization:4100/health"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  ################################################
+  # Gateway Service
+  ################################################
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ./gateway/src:/app/src
+      - ./gateway/tsconfig.json:/app/tsconfig.json
+      - ./gateway/package.json:/app/package.json
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      USERS: http://users:4001/graphql
+      BILLING: http://billing:4002/graphql
+      NOTIFICATIONS: http://notifications:4003/graphql
+      AUTHORIZATION: http://authorization:4100/authorize
+    depends_on:
+      users:
+        condition: service_healthy
+      authorization:
+        condition: service_healthy
+      billing:
+        condition: service_healthy

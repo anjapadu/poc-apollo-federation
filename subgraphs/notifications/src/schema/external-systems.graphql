@@ -1,0 +1,12 @@
+extend type User @key(fields: "id") {
+  id: ID! @external
+  name: String @external
+  inboxCount: Int
+  inbox(page: Int, perPage: Int): [Inbox!]!
+  notifications: [Notification!]!
+}
+
+extend type Account @key(fields: "id") {
+  id: ID! @external
+  name: String @external
+}

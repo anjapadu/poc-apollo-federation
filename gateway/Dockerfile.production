@@ -1,0 +1,21 @@
+# Stage 1: Build
+FROM public.ecr.aws/lambda/nodejs:22 AS builder
+RUN npm install -g yarn
+WORKDIR /app
+
+COPY package.json yarn.lock tsconfig.json tsconfig.prod.json ./
+
+RUN yarn install --immutable
+
+COPY src/ ./src
+
+RUN yarn build:prod && ls -la /app && ls -la /app/dist || { echo "Build failed, no dist directory"; exit 1; }
+
+# Stage 2: Runtime
+FROM public.ecr.aws/lambda/nodejs:22
+COPY --from=builder /app/dist/ ${LAMBDA_TASK_ROOT}/
+COPY --from=builder /app/node_modules/ ${LAMBDA_TASK_ROOT}/node_modules/
+COPY --from=builder /app/package.json ${LAMBDA_TASK_ROOT}/
+
+ENV NODE_ENV=production
+CMD [ "index.handler" ]

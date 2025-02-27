@@ -1,0 +1,78 @@
+type Product @key(fields: "id") {
+  id: ID!
+  type: ProductTypeEnum!
+  description: String
+}
+
+type ServiceTerm @key(fields: "id") {
+  id: ID!
+  name: String!
+  description: String!
+  externalId: Int!
+  durationInMonths: Int!
+}
+
+type AccountProductServiceTerm @key(fields: "id") {
+  id: ID!
+  account: Account! @provides(fields: "id")
+  product: Product!
+  serviceTerm: ServiceTerm!
+  accountSuggestedPrice: Float
+  maxRetailPrice: Float
+  termPrice: Float!
+}
+
+type Sale @key(fields: "id") {
+  id: ID!
+  vehicle: Vehicle!
+  dealer: Account!
+  customerEmail: String!
+  customerAccount: Account!
+  customerUserId: String!
+  customerFirstName: String!
+  customerLastName: String!
+  createdAt: DateTime!
+  voidedAt: DateTime
+  expiresAt: DateTime!
+  dealerRepresentative: String
+  doingBusinessAs: String
+  device: Device
+  imei: String
+  vin: String
+  accountProductServiceTerm: AccountProductServiceTerm
+  salePrice: Float!
+  priceOnSaleTime: Float!
+  transferReason: TransferReasonEnum!
+}
+
+type PenRateMonthly @key(fields: "accountId yearMonth") {
+  accountId: ID!
+  penRate: Float!
+  oneYearRegistrations: Int!
+  greaterThanOneYearRegistrations: Int!
+  smartMarketingRegistrations: Int!
+  smartMarketingNotSignedRegistrations: Int
+  auctionRegistrations: Int
+  dealerTradeRegistrations: Int!
+  dealerInternalTransferRegistrations: Int!
+  yearMonth: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+type GlobalPenRate @key(fields: "accountId") {
+  accountId: ID!
+  oneYearRegistrations: Int!
+  greaterThanOneYearRegistrations: Int!
+  smartMarketingRegistrations: Int!
+  smartMarketingNotSignedRegistrations: Int
+  auctionRegistrations: Int
+  dealerTradeRegistrations: Int!
+  dealerInternalTransferRegistrations: Int!
+  penRate: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  healthCheck: String!
+}
